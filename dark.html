@@ -143,13 +143,11 @@
 function handleKeyPress(event) {
   if (event.key === 'q') {
     toggleMagnet();
+  } else if (event.key === 'e') {
+    clearWords();
   }
 }
-    function handleKeyPress(event) {
-  if (event.key === 'e') {
-    toggleMagnet();
-  }
-}
+
     function windowResized() {
       resizeCanvas(windowWidth, windowHeight);
       Body.setPosition(ground, { x: width / 2, y: height + 50 });
