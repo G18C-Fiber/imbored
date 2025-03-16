@@ -3,6 +3,10 @@
     {
       "src": "/",
       "dest": "/bored.html"
+    },
+     {
+      "src": "/dark",
+      "dest": "/dark.html"
     }
   ]
 }
