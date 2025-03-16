@@ -14,13 +14,13 @@
     }
     body, html {
       height: 100%;
-      background-color: #f0f0f0;
+      background-color: #000;
       font-family: Arial, sans-serif;
       overflow: hidden;
     }
     .text-container {
       position: relative;
-      z-index: 2;
+      z-index: 2;`
       width: 100%;
       text-align: center;
       top: 40%;
@@ -31,6 +31,7 @@
       pointer-events: none;
     }
     h1 {
+      color: white;
       font-size: 4em;
     }
     p {
@@ -44,7 +45,7 @@
       pointer-events: auto;
     }
     #clear {
-      color: black;
+      color: gray;
       cursor: pointer;
       pointer-events: auto;
       position: absolute;
@@ -54,7 +55,7 @@
       transition: opacity 0.5s;
     }
     #magnet {
-      color: black;
+      color: gray;
       cursor: pointer;
       pointer-events: auto;
       position: absolute;
@@ -66,6 +67,7 @@
     canvas {
       position: absolute;
       top: 0;
+      background-color: #000;
       left: 0;
       z-index: 1;
     }
@@ -190,14 +192,14 @@
     function toggleMagnet() {
       magnetMode = !magnetMode;
       if (magnetMode) {
-        document.getElementById("magnet").style.color = 'green';
+        document.getElementById("magnet").style.color = 'white';
       } else {
-        document.getElementById("magnet").style.color = 'black';
+        document.getElementById("magnet").style.color = 'gray';
       }
     }
 
     function draw() {
-      background(240);
+      background(0);
       Engine.update(engine);
 
       const mouseXPos = mouseX;
@@ -218,7 +220,7 @@
           Body.applyForce(obj.body, obj.body.position, force);
         }
 
-        fill(obj.color === 'gold' ? 'gold' : 'black');
+        fill(obj.color === 'gold' ? 'gold' : 'white');
         text(obj.letter, 0, 0);
         pop();
       }
