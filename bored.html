@@ -135,11 +135,12 @@
         document.getElementById("placeholder").style.opacity = 1;
         document.getElementById("clear").style.opacity = 1;
         document.getElementById("magnet").style.opacity = 1;
-      });
- document.addEventListener('keydown', handleKeyPress);
+         document.addEventListener('keydown', handleKeyPress);
       document.getElementById("clear").addEventListener("click", clearWords);
       document.getElementById("magnet").addEventListener("click", toggleMagnet);
     }
+      });
+
 function handleKeyPress(event) {
   if (event.key === 'q') {
     toggleMagnet();
