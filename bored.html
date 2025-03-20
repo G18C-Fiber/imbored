@@ -6,7 +6,7 @@
   <title>kzok! is king</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.17.1/matter.min.js"></script>
-   <script>
+  <script>
     window.onload = function() {
       // List of possible titles
       const titles = [
@@ -25,7 +25,6 @@
       document.title = randomTitle;
     };
   </script>
-
   <style>
     * {
       margin: 0;
@@ -83,6 +82,17 @@
       opacity: 0;
       transition: opacity 0.5s;
     }
+    #accelerator {
+      color: black;
+      cursor: pointer;
+      pointer-events: auto;
+      position: absolute;
+      top: -250%;
+      right: 10px;
+      opacity: 1;
+      transition: color 0.3s;
+    }
+
     canvas {
       position: absolute;
       top: 0;
@@ -97,7 +107,8 @@
     <h1>IM <span id="bored">BORED</span></h1>
     <p id="clear">clear(e)</p>
     <p id="magnet">magnet(q)</p>
-    <p id="dark"><a href="https://imboredd.vercel.app">Dark Mode</a></p>
+    <p id="accelerator">particle accelerator(r)</p>
+
   </div>
   <script>
     const Engine = Matter.Engine,
@@ -113,6 +124,8 @@
     const letters = "BORED".split("");
     const fontSize = 32;
     let magnetMode = false;
+    let habibSpawned = false;
+    let goldMode = false; // Define goldMode flag
 
     function setup() {
       canvas = createCanvas(windowWidth, windowHeight);
@@ -136,19 +149,19 @@
         document.getElementById("placeholder").style.opacity = 1;
         document.getElementById("clear").style.opacity = 1;
         document.getElementById("magnet").style.opacity = 1;
-         document.addEventListener('keydown', handleKeyPress);
+      });
+      document.addEventListener('keydown', handleKeyPress);
       document.getElementById("clear").addEventListener("click", clearWords);
       document.getElementById("magnet").addEventListener("click", toggleMagnet);
     }
-      });
 
-function handleKeyPress(event) {
-  if (event.key === 'q') {
-    toggleMagnet();
-  } else if (event.key === 'e') {
-    clearWords();
-  }
-}
+    function handleKeyPress(event) {
+      if (event.key === 'q') {
+        toggleMagnet();
+      } else if (event.key === 'e') {
+        clearWords();
+      }
+    }
 
     function windowResized() {
       resizeCanvas(windowWidth, windowHeight);
@@ -162,13 +175,31 @@ function handleKeyPress(event) {
       const baseX = width / 2;
       const baseY = height / 2;
 
+      // 0.5% chance that all spawned letters turn gold
+      if (Math.random() < 0.005) {
+        goldMode = true; // Activate gold mode
+        // Change the placeholder text when gold mode is activated
+        document.getElementById("placeholder").innerText = "*there's like a 0.5% chance of this happening bro*";
+        // Apply gold color to all existing letters
+        for (let obj of boredBodies) {
+          obj.color = 'gold';
+        }
+      }
+
+      let spawnHabib = !habibSpawned && Math.random() < 0.2;
+      let spawnKzok = Math.random() < 0.5; // Chance for "KZOK" to spawn
+
+      if (spawnHabib) habibSpawned = true;
+
+      // Spawn "BORED" letters
       for (let i = 0; i < 10; i++) {
-        let offsetX = random(-400, 200);
-        let offsetY = random(-400, 200);
+        let offsetX = Math.random() * 600 - 400;
+        let offsetY = Math.random() * 600 - 400;
         let spawnX = baseX + offsetX;
         let spawnY = baseY + offsetY;
 
-        let wordColor = random() < 0.01 ? 'gold' : 'black';
+        // If gold mode is active, new letters are gold; otherwise, 1% chance to turn gold, else black.
+        let wordColor = goldMode ? 'gold' : (Math.random() < 0.01 ? 'gold' : 'black');
 
         for (let j = 0; j < letters.length; j++) {
           let body = Bodies.circle(spawnX + j * 40, spawnY, fontSize * 0.6, {
@@ -178,14 +209,46 @@ function handleKeyPress(event) {
           });
 
           const forceMagnitude = 0.1;
-          const angle = random(0, TWO_PI);
+          const angle = Math.random() * Math.PI * 2;
           Body.applyForce(body, { x: spawnX, y: spawnY }, {
-            x: forceMagnitude * cos(angle),
-            y: forceMagnitude * sin(angle)
+            x: forceMagnitude * Math.cos(angle),
+            y: forceMagnitude * Math.sin(angle)
           });
+
           boredBodies.push({ body, letter: letters[j], color: wordColor });
         }
       }
+
+      // Spawn "HABIB" letters with blue color (or gold if goldMode is active)
+      if (spawnHabib) {
+        let habibX = baseX + (Math.random() * 600 - 400);
+        let habibY = baseY + (Math.random() * 600 - 400);
+        let habibLetters = "HABIB".split("");
+        for (let j = 0; j < habibLetters.length; j++) {
+          let body = Bodies.circle(habibX + j * 40, habibY, fontSize * 0.6, {
+            restitution: 0.3,
+            friction: 0.5,
+            density: 0.002
+          });
+          boredBodies.push({ body, letter: habibLetters[j], color: goldMode ? 'gold' : 'blue' });
+        }
+      }
+
+      // Spawn "KZOK" letters with red color (or gold if goldMode is active)
+      if (spawnKzok) {
+        let kzokX = baseX + (Math.random() * 600 - 400);
+        let kzokY = baseY + (Math.random() * 600 - 400);
+        let kzokLetters = "KZOK".split("");
+        for (let j = 0; j < kzokLetters.length; j++) {
+          let body = Bodies.circle(kzokX + j * 40, kzokY, fontSize * 0.6, {
+            restitution: 0.3,
+            friction: 0.5,
+            density: 0.002
+          });
+          boredBodies.push({ body, letter: kzokLetters[j], color: goldMode ? 'gold' : 'red' });
+        }
+      }
+
       World.add(world, boredBodies.map(obj => obj.body));
     }
 
@@ -193,8 +256,9 @@ function handleKeyPress(event) {
       for (let obj of boredBodies) {
         World.remove(world, obj.body);
       }
-
       boredBodies = [];
+      habibSpawned = false;
+      goldMode = false;  // Reset gold mode when clearing words
 
       Engine.clear(engine);
       World.clear(world, false);
@@ -214,16 +278,40 @@ function handleKeyPress(event) {
       document.getElementById("clear").style.opacity = 0;
       document.getElementById("placeholder").style.opacity = 1;
       document.getElementById("magnet").style.opacity = 0;
+
+      // Reset placeholder text back to its original state
+      document.getElementById("placeholder").innerText = "*i made this in Habib's class get on my level*";
     }
 
     function toggleMagnet() {
       magnetMode = !magnetMode;
-      if (magnetMode) {
-        document.getElementById("magnet").style.color = 'green';
+      document.getElementById("magnet").style.color = magnetMode ? "green" : "black";
+    }
+
+    let defaultMagnetForce = 0.01;
+    let defaultMinDistance = 0;
+    let magnetForce = defaultMagnetForce;
+    let minDistance = defaultMinDistance;
+
+    document.getElementById("accelerator").addEventListener("click", toggleAccelerator);
+
+    function toggleAccelerator() {
+      if (magnetForce === defaultMagnetForce) {
+        magnetForce = 0.1;
+        minDistance = fontSize * 1.2;
+        document.getElementById("accelerator").style.color = "green";
       } else {
-        document.getElementById("magnet").style.color = 'black';
+        magnetForce = defaultMagnetForce;
+        minDistance = defaultMinDistance;
+        document.getElementById("accelerator").style.color = "black";
       }
     }
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "r") {
+        toggleAccelerator();
+      }
+    });
 
     function draw() {
       background(240);
@@ -241,17 +329,28 @@ function handleKeyPress(event) {
         rotate(obj.body.angle);
 
         if (magnetMode) {
-          let forceMagnitude = 0.01;
-          let angle = Math.atan2(mouseYPos - obj.body.position.y, mouseXPos - obj.body.position.x);
-          let force = Matter.Vector.create(Math.cos(angle) * forceMagnitude, Math.sin(angle) * forceMagnitude);
-          Body.applyForce(obj.body, obj.body.position, force);
+          const dx = mouseXPos - obj.body.position.x;
+          const dy = mouseYPos - obj.body.position.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          if (distance > minDistance) {
+            let forceMagnitude = magnetForce;
+            let angle = Math.atan2(dy, dx);
+            let force = Matter.Vector.create(
+              Math.cos(angle) * forceMagnitude,
+              Math.sin(angle) * forceMagnitude
+            );
+            Body.applyForce(obj.body, obj.body.position, force);
+          }
         }
 
-        fill(obj.color === 'gold' ? 'gold' : 'black');
+        fill(obj.color);
         text(obj.letter, 0, 0);
         pop();
       }
     }
+
+
   </script>
 </body>
 </html>
