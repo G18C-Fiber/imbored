@@ -312,12 +312,13 @@
       const controlsHeight = getControlsHeight();
 
       
-      for (let i = boredBodies.length - 1; i >= 0; i--) {
-        if (boredBodies[i].body.position.y > windowHeight - controlsHeight) {
-          World.remove(world, boredBodies[i].body);
-          boredBodies.splice(i, 1);
-        }
-      }
+   for (let i = boredBodies.length - 1; i >= 0; i--) {
+  if (boredBodies[i].body.position.y > windowHeight - controlsHeight) {
+    World.remove(world, boredBodies[i].body, true); // Ensure full removal from physics world
+    boredBodies.splice(i, 1); // Remove from the array
+  }
+}
+
       
       fill(0);
       textSize(fontSize);
