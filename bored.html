@@ -7,6 +7,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.17.1/matter.min.js"></script>
   <script>
+    
     window.onload = function() {
       // List of possible titles
       const titles = [
@@ -24,6 +25,11 @@
       // Set the randomly selected title as the document title
       document.title = randomTitle;
     };
+// stop that stupid shit when it lets them move the whole screen around
+    document.addEventListener('touchmove', function(e) {
+  e.preventDefault();
+}, { passive: false });
+
 
     (function() {
       // Option 1: check if like the screen width is below the idk
