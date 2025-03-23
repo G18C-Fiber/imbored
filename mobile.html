@@ -20,6 +20,15 @@
       ];
       document.title = titles[Math.floor(Math.random() * titles.length)];
     };
+
+
+    // stop that stupid shit when it lets them move the whole screen around
+    document.addEventListener('touchmove', function(e) {
+  e.preventDefault();
+}, { passive: false });
+
+
+
   </script>
   <style>
     * {
